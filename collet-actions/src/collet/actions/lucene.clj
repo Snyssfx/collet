@@ -446,3 +446,46 @@
 [:title [:and [:or "quick" "brown"] "fox"]]
 
 
+;; Snyssfx's take
+;; https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
+
+;; fields
+[:and
+ [:title "Do it right"]
+ "right"]
+
+;; wildcard searhes
+"te?t"
+"test*"
+"te*t"
+
+;; fuzzy search
+["roam" {:fuzzy 0.8}]
+
+;; proximity search
+["jakarta apache" {:proximity 10}]
+
+;; ranges
+[:mod_date [:range ["20020101" "20030101"]]]
+[:title [:range {"Aida" "Carmen"}]]
+
+;; boost
+[["jakarta" {:boost 4}] "apache"]
+[["jakarta apache" {:boost 4}] "Apache Lucene"]
+
+;; boolean operators
+[:or "jakarta apache" "jakarta"] = ["jakarta apache" "jakarta"]
+[:and "jakarta apache" "Apache Lucene"]
+[:+"jakarta" "lucene"]
+["jakarta apache" :NOT "Apache Lucene"] = ["jakarta apache" :! "Apache Lucene"]
+["jakarta apache" :-"Apache Lucene"]
+
+;; grouping
+'(:and (:or "jakarta" "apache") "website")
+;; this will compile to the same thing:
+[:and [:or "jakarta" "apache"] "website"]
+
+;; field grouping
+'[:title (:+"return" :+"pink partner")]
+;; this will compile to the same thing
+'[:title [:+"return" :+"pink partner"]]
